@@ -8,9 +8,10 @@ import kotlinx.serialization.json.JsonPrimitive
 object Locale {
     private var currentLanguage = ""
     private var locale = mapOf<String, String>()
+    private var availableLanguages = setOf("en")
 
     fun loadLanguage(language: String, callback: () -> Unit) {
-        val loadLanguage = if (language in AVAILABLE_LANGUAGES) language else "en"
+        val loadLanguage = if (language in availableLanguages) language else error("Language $language is not available")
 
         if (currentLanguage == loadLanguage) {
             callback()
@@ -32,7 +33,9 @@ object Locale {
             }
     }
 
-    val String.translate get() = locale[this] ?: this
+    fun availableLanguages(vararg languages: String) {
+        availableLanguages = languages.toSet()
+    }
 
-    private val AVAILABLE_LANGUAGES = setOf("es", "en")
+    val String.translate get() = locale[this] ?: this
 }
